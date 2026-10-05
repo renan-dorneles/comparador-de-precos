@@ -1,0 +1,64 @@
+{
+  // ============================
+  // PYTHON + NOTEBOOKS (JUPYTER)
+  // ============================
+
+  // Interpretação do Python: ambiente virtual local (se existir)
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.defaultInterpreter": "${workspaceFolder}/.venv/bin/python",
+
+  // Ativará automaticamente o ambiente virtual no terminal integrado
+  "python.terminal.activateEnvironment": true,
+
+  // Kernel do Jupyter: usa o ambiente virtual local
+  "jupyter.interpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "jupyter.jupyterServerType": "local",
+
+  // Kernel padrão para novos notebooks
+  "notebook.defaultKernel": "python3",
+
+  // Armazena os output de células como referência de versão
+  "jupyter.storeStatesInDataFiles": true,
+
+  // Renderização de markdown e LaTeX nos notebooks
+  "jupyter.markdownRenderDelay": 100,
+  "jupyter.showCellStatusBar": true,
+
+  // ============================
+  // FORMATAÇÃO E LINTER
+  // ============================
+
+  // Formata no salvamento
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  // Python format
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.rulers": [100],
+    "editor.tabSize": 4
+  },
+  "[jupyter]": {
+    "editor.defaultFormatter": "ms-toolsai.jupyter"
+  },
+
+  // Linters
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": false,
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Path": "${command:python.interpreter.path}",
+
+  // ============================
+  // INTELLISENSE
+  // ============================
+
+  "python.analysis.typeCheckingMode": "basic",
+
+  // ============================
+  // DEBUG
+  // ============================
+
+  "debug.console.ignoreReturnCode": true
+}

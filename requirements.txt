@@ -1,0 +1,24 @@
+# ============================================================
+# Python Package Dependencies
+# ============================================================
+# Dependencies principais do comparador de preços
+
+# Processamento de dados
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualização de dados
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Análise avançada e machine learning
+scikit-learn>=1.3.0
+
+# Utilitários
+requests>=2.31.0
+
+# Desenvolvimento (para notebooks e testes)
+jupyter>=1.0.0
+jupyterlab>=4.0.0
+ipykernel>=6.26.0
+notebook>=7.0.0

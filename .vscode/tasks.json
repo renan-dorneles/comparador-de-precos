@@ -1,0 +1,113 @@
+{
+    // ============================================================
+    // Tarefas VS Code - Execução de Notebooks Python
+    // ============================================================
+
+    "version": "2.0.0",
+    "tasks": [
+        // Executar célula atual do notebook
+        {
+            "label": "jupyter-notebook",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "-m", "jupyter",
+                "notebook",
+                "--no-browser",
+                "--port=8888",
+                "--notebook-dir=${workspaceFolder}"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        // Instalar dependências do requirements.txt
+        {
+            "label": "install-requirements",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "-m", "pip",
+                "install",
+                "-r", "requirements.txt"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        // Criar ambiente virtual
+        {
+            "label": "create-venv",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "-m", "venv",
+                ".venv"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        // Executar o notebook (todas as células) via nbconvert
+        {
+            "label": "run-notebook",
+            "type": "shell",
+            "command": "jupyter",
+            "args": [
+                "nbconvert",
+                "--to", "notebook",
+                "--execute",
+                "--inplace",
+                "${file}"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        // Validar notebook (sem executar)
+        {
+            "label": "validate-notebook",
+            "type": "shell",
+            "command": "jupyter",
+            "args": [
+                "nbconvert",
+                "--to", "notebook",
+                "--execute",
+                "--inplace",
+                "--no-output",
+                "${file}"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

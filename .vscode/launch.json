@@ -1,0 +1,66 @@
+{
+    // ============================================================
+    // Configuração de Depuração VS Code - Notebooks Python
+    // ============================================================
+
+    "version": "0.2.0",
+    "configurations": [
+        // Executa o notebook atual como um script Python normal
+        {
+            "name": "Executar Notebook",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "args": []
+        },
+        // Executa a célula selecionada (para notebooks)
+        {
+            "name": "Executar Célula Atual",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": true,
+            "preLaunchTask": "jupyter-notebook",
+            "args": ["-c"]
+        },
+        // Executa todas as células do notebook
+        {
+            "name": "Executar Todas as Células do Notebook",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": true,
+            "python.askForArgs": false,
+            "args": ["${file}"]
+        },
+        // Executa Python interativo
+        {
+            "name": "Python Interativo",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/python", // Use o interpretador do ambiente virtual
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "VIRTUAL_ENV": "${workspaceFolder}/.venv"
+            },
+            "justMyCode": true
+        }
+    ],
+    "compounds": [
+        // Conjunto que inclui depuração + integração com Jupyter
+        {
+            "name": "Depuração Notebook Completa",
+            "configurations": ["Executar Notebook", "jupyter-notebook"]
+        }
+    ]
+}
