@@ -24,9 +24,10 @@ class Settings(BaseSettings):
     debug: bool = False
 
     # Database
+    # O driver precisa ser explicito (asyncpg) porque a engine e assincrona.
     database_url: str = Field(
-        default="postgresql://comparador_user:comparador_pass@localhost:5432/comparador_precos",
-        description="URL de conexão PostgreSQL",
+        default="postgresql+asyncpg://comparador_user:comparador_pass@localhost:5432/comparador_precos",
+        description="URL de conexão PostgreSQL (driver asyncpg)",
     )
 
     # Redis

@@ -38,7 +38,7 @@ docker compose up -d
 Crie um arquivo `.env` na raiz:
 
 ```env
-DATABASE_URL=postgresql://comparador_user:comparador_pass@localhost:5432/comparador_precos
+DATABASE_URL=postgresql+asyncpg://comparador_user:comparador_pass@localhost:5432/comparador_precos
 REDIS_URL=redis://localhost:6379/0
 SECRET_KEY=troque-esta-chave-em-producao
 ALGORITHM=HS256
