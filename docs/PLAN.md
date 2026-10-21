@@ -8,11 +8,14 @@
 
 | Item | Estado |
 |------|--------|
-| **Código** | Apenas notebook Jupyter com dados mock para EDA |
-| **Dependências** | pandas, numpy, matplotlib, seaborn, scikit-learn, requests |
-| **Estrutura** | Sem `src/`, sem API, sem modelos de BD, sem serviços |
-| **Git** | Repositório fresco (sem commits) |
-| **Infraestrutura** | Nenhuma (Docker, PostGIS, Redis pendentes) |
+| **Fase 0** (fundação) | ✅ Concluída — estrutura, dependências, Docker Compose, CI |
+| **Fase 1** (modelos/BD) | ✅ Concluída — 7 modelos, migração inicial, sessão async, ledger ACID |
+| **Fase 2** (auth/créditos) | ✅ Concluída — JWT (register/login/refresh/me), onboarding +20, `/me/credits`, rate limit Redis |
+| **Fase 3** (ingestão NFC-e) | 🔄 Parcial — 3.1 (decoder QR) ✅; 3.2–3.7 pendentes |
+| **Fase 4** (busca PostGIS) | ⏳ Não iniciada |
+| **Fase 5** (testes/deploy) | 🔄 Parcial — 29 testes unitários; falta integração, observabilidade e `docker-compose.prod.yml` |
+| **Infraestrutura** | ✅ Docker Compose (PostGIS 16-3.5 + Redis), Dockerfile, CI com validação de schema |
+| **Git** | ✅ `main` com Fases 0–2 mergeadas (PR #1); token de CI exposto — **revogar** |
 
 ---
 
@@ -120,11 +123,11 @@
 ## ✅ Próximos Passos Imediatos (Act Mode)
 
 1. ✅ **Criar PLAN.md** ← *CONCLUÍDO*
-2. ⏳ **Executar Fase 0**: Setup projeto, dependências, Docker Compose (PostgreSQL+PostGIS, Redis)
-3. ⏳ **Executar Fase 1**: Modelos SQLAlchemy + Migrações Alembic
-4. ⏳ **Executar Fase 2**: Auth JWT + Sistema de Créditos
-5. ⏳ **Executar Fase 3**: Pipeline NFC-e (core) — httpx/BeautifulSoup + Playwright fallback + Open Router IA
-6. ⏳ **Executar Fase 4**: Busca PostGIS + Otimização
+2. ✅ **Executar Fase 0**: Setup projeto, dependências, Docker Compose (PostgreSQL+PostGIS, Redis) ← *CONCLUÍDO*
+3. ✅ **Executar Fase 1**: Modelos SQLAlchemy + Migrações Alembic ← *CONCLUÍDO*
+4. ✅ **Executar Fase 2**: Auth JWT + Sistema de Créditos ← *CONCLUÍDO*
+5. ⏳ **Executar Fase 3**: Pipeline NFC-e (core) — scraper SEFAZ-RS (httpx/BeautifulSoup) + Playwright fallback + Open Router IA + `POST /invoices/scan`
+6. ⏳ **Executar Fase 4**: Busca PostGIS + Otimização (`POST /search/optimize`)
 7. ⏳ **Executar Fase 5**: Testes backend (pytest) + Deploy + Validação manual mobile (Expo Go)
 
 ---
