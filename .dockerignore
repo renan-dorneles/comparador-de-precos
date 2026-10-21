@@ -1,0 +1,24 @@
+# ============================================================
+# .dockerignore
+# ============================================================
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.git/
+.github/
+.vscode/
+.clinerules/
+.superpowers/
+node_modules/
+mobile-app/
+*.log
+.DS_Store
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+tests/
