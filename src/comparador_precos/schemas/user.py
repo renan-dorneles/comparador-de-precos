@@ -4,7 +4,6 @@
 """Schemas Pydantic para usuários."""
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -29,9 +28,9 @@ class UserRead(UserBase):
 
 
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
-    password: Optional[str] = Field(default=None, min_length=8, max_length=128)
-    is_active: Optional[bool] = None
+    email: EmailStr | None = None
+    password: str | None = Field(default=None, min_length=8, max_length=128)
+    is_active: bool | None = None
 
     class Config:
         from_attributes = True

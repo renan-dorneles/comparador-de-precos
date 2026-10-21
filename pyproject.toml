@@ -66,8 +66,8 @@ notebook = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["*"]
+where = ["src"]
+include = ["comparador_precos*"]
 
 [tool.black]
 line-length = 100
@@ -88,6 +88,32 @@ extend-exclude = '''
   | dist
 )/
 '''
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "C4", "SIM", "BLE", "S", "RUF"]
+ignore = [
+    "E501",    # line length e controlado pelo black
+    "B008",    # Depends() em defaults é o padrão idiomático do FastAPI
+    "BLE001",  # fail-open intencional em serviços de infraestrutura (Redis)
+    "S101",    # asserts são válidos em testes
+    "SIM108",  # ternário é mais legível que if/else em alguns casos
+    "RUF001",  # não corrigir ambiguidade de caracteres unicode em strings
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "B", "SIM", "BLE"]
+"alembic/*" = ["E402"]
+# "bearer" e o tipo do token OAuth2, nao uma senha hardcoded
+"src/comparador_precos/schemas/auth.py" = ["S105"]
+"src/comparador_precos/api/routes/auth.py" = ["S105", "S106"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["comparador_precos"]
 
 [tool.flake8]
 max-line-length = 100

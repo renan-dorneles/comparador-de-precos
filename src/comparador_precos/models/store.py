@@ -3,18 +3,11 @@
 # ============================================================
 """Modelos de lojas e preços capturados."""
 
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    Float,
-    DateTime,
-    ForeignKey,
-    Text,
-    func,
-)
-from sqlalchemy.orm import relationship
+from datetime import datetime
+
 from geoalchemy2 import Geometry
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from comparador_precos.core.database import Base
 
@@ -24,17 +17,16 @@ class Store(Base):
 
     __tablename__ = "stores"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(255), nullable=False, index=True)
-    cnpj = Column(String(18), unique=True, nullable=True)
-    address = Column(Text, nullable=True)
-    location = Column(Geometry("POINT", srid=4326), nullable=True)  # PostGIS
-    city = Column(String(100), nullable=True, index=True)
-    state = Column(String(2), nullable=True, index=True)
-    created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False,
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    cnpj: Mapped[str | None] = mapped_column(String(18), unique=True, nullable=True)
+    address: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # PostGIS
+    location: Mapped[Geometry | None] = mapped_column(Geometry("POINT", srid=4326), nullable=True)
+    city: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    state: Mapped[str | None] = mapped_column(String(2), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
     # Relacionamentos
@@ -53,26 +45,24 @@ class StorePrice(Base):
 
     __tablename__ = "store_prices"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    store_id = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    store_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("stores.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
-    catalog_product_id = Column(
+    catalog_product_id: Mapped[int | None] = mapped_column(
         Integer,
         ForeignKey("product_catalog.id", ondelete="SET NULL"),
         nullable=True,
         index=True,
     )
-    price = Column(Float, nullable=False)
-    captured_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False,
+    price: Mapped[float] = mapped_column(Float, nullable=False)
+    captured_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    invoice_item_id = Column(
+    invoice_item_id: Mapped[int | None] = mapped_column(
         Integer,
         ForeignKey("invoice_items.id", ondelete="SET NULL"),
         nullable=True,
@@ -84,7 +74,4 @@ class StorePrice(Base):
     catalog_product = relationship("ProductCatalog", back_populates="store_prices")
 
     def __repr__(self) -> str:
-        return (
-            f"<StorePrice(id={self.id}, store_id={self.store_id}, "
-            f"price={self.price})>"
-        )
+        return f"<StorePrice(id={self.id}, store_id={self.store_id}, " f"price={self.price})>"

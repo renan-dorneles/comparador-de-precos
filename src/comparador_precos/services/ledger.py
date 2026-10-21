@@ -14,17 +14,16 @@ vice-versa. Para evitar condições de corrida (race conditions), o usuário é
 bloqueado com `SELECT ... FOR UPDATE` antes da atualização.
 """
 
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
-from sqlalchemy import select
+from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from comparador_precos.models.user import User
 from comparador_precos.models.credit_transaction import (
     CreditTransaction,
     TransactionType,
 )
+from comparador_precos.models.user import User
 
 
 class InsufficientCreditsError(Exception):
@@ -43,7 +42,7 @@ class LedgerService:
 
         Garante que nenhum outra transação altere o saldo concorrentemente.
         """
-        result = await db.execute(
+        result: Result[User] = await db.execute(
             select(User).where(User.id == user_id).with_for_update()
         )
         user = result.scalar_one_or_none()
@@ -53,7 +52,7 @@ class LedgerService:
 
     async def get_balance(self, db: AsyncSession, user_id: int) -> int:
         """Retorna o saldo atual de créditos do usuário."""
-        result = await db.execute(
+        result: Result[int] = await db.execute(
             select(User.credit_balance).where(User.id == user_id)
         )
         balance = result.scalar_one_or_none()
@@ -69,7 +68,7 @@ class LedgerService:
         user_id: int,
         amount: int,
         transaction_type: TransactionType,
-        reference_id: Optional[str] = None,
+        reference_id: str | None = None,
     ) -> CreditTransaction:
         """Aplica uma movimentação de crédito de forma atômica.
 
@@ -106,15 +105,13 @@ class LedgerService:
             amount=amount,
             transaction_type=transaction_type,
             reference_id=reference_id,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
         )
         db.add(transaction)
         await db.flush()
         return transaction
 
-    async def process_onboarding(
-        self, db: AsyncSession, user_id: int
-    ) -> CreditTransaction:
+    async def process_onboarding(self, db: AsyncSession, user_id: int) -> CreditTransaction:
         """Concede os 20 créditos iniciais de onboarding."""
         return await self.apply(
             db=db,
@@ -127,7 +124,7 @@ class LedgerService:
         self,
         db: AsyncSession,
         user_id: int,
-        reference_id: Optional[str] = None,
+        reference_id: str | None = None,
     ) -> CreditTransaction:
         """Concede +5 créditos por NFC-e processada com sucesso."""
         return await self.apply(
@@ -142,7 +139,7 @@ class LedgerService:
         self,
         db: AsyncSession,
         user_id: int,
-        reference_id: Optional[str] = None,
+        reference_id: str | None = None,
     ) -> CreditTransaction:
         """Debita -1 crédito pela otimização de cesta de compras."""
         return await self.apply(

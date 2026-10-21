@@ -15,7 +15,6 @@ A URL do QR Code da SEFAZ tem o formato:
 import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Optional
 
 # Parâmetros de query que podem conter a chave de acesso
 _QUERY_KEYS = ("p", "chNFe", "chave", "nChave")
@@ -89,9 +88,7 @@ def extract_access_key(qr_content: str) -> str:
     if match:
         return match.group(0)
 
-    raise NFCeDecodeError(
-        "Chave de acesso de 44 dígitos não encontrada no QR Code"
-    )
+    raise NFCeDecodeError("Chave de acesso de 44 dígitos não encontrada no QR Code")
 
 
 def parse_access_key(access_key: str) -> AccessKey:
@@ -160,7 +157,7 @@ def decode_qr_code(qr_content: str) -> AccessKey:
 def is_expired(
     issue_date: datetime,
     max_age_days: int = 7,
-    now: Optional[datetime] = None,
+    now: datetime | None = None,
 ) -> bool:
     """Verifica se a nota fiscal está fora da validade.
 

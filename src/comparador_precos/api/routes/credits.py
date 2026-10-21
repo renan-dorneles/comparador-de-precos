@@ -9,7 +9,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from comparador_precos.core.database import get_session
 from comparador_precos.core.dependencies import get_current_user
 from comparador_precos.models.user import User
-from comparador_precos.schemas.credit import CreditBalanceRead
+from comparador_precos.schemas.credit import (
+    CreditBalanceRead,
+    CreditTransactionRead,
+)
 from comparador_precos.services.ledger import LedgerService
 
 router = APIRouter(prefix="/me", tags=["credits"])
@@ -27,9 +30,10 @@ async def get_my_credits(
 ):
     """Retorna o saldo atual de créditos e as últimas transações do ledger."""
     balance = await ledger.get_balance(db, current_user.id)
-    transactions = await ledger.get_transaction_history(db, current_user.id, limit=20)
+    raw_transactions = await ledger.get_transaction_history(db, current_user.id, limit=20)
+    recent_transactions = [CreditTransactionRead.model_validate(t) for t in raw_transactions]
 
     return CreditBalanceRead(
         balance=balance,
-        recent_transactions=transactions,
+        recent_transactions=recent_transactions,
     )

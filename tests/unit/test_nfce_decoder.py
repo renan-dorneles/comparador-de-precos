@@ -23,10 +23,7 @@ CHAVE_VALIDA = "43230500000000000191650010000000011000000014"
 
 class TestExtractAccessKey:
     def test_extract_from_sefaz_url(self):
-        url = (
-            "https://www.nfce.sefaz.rs.gov.br/nfce-web/pages/QRCode.aspx"
-            f"?p={CHAVE_VALIDA}"
-        )
+        url = "https://www.nfce.sefaz.rs.gov.br/nfce-web/pages/QRCode.aspx" f"?p={CHAVE_VALIDA}"
 
         assert extract_access_key(url) == CHAVE_VALIDA
 
@@ -96,10 +93,7 @@ class TestParseAccessKey:
 
 class TestDecodeQrCode:
     def test_full_pipeline(self):
-        url = (
-            "https://www.nfce.sefaz.rs.gov.br/nfce-web/pages/QRCode.aspx"
-            f"?p={CHAVE_VALIDA}"
-        )
+        url = "https://www.nfce.sefaz.rs.gov.br/nfce-web/pages/QRCode.aspx" f"?p={CHAVE_VALIDA}"
 
         resultado = decode_qr_code(url)
 

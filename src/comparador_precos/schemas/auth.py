@@ -4,7 +4,6 @@
 """Schemas Pydantic para autenticação."""
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -27,6 +26,6 @@ class RefreshTokenRequest(BaseModel):
 class TokenPayload(BaseModel):
     """Payload decodificado do JWT."""
 
-    sub: Optional[int] = None
-    exp: Optional[datetime] = None
-    type: Optional[str] = None
+    sub: int | None = None
+    exp: datetime | None = None
+    type: str | None = None

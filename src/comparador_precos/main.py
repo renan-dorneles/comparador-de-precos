@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from comparador_precos.core.config import get_settings
-from comparador_precos.core.database import init_db, close_db
+from comparador_precos.core.database import close_db, init_db
 
 settings = get_settings()
 
@@ -61,6 +61,7 @@ async def root():
 
 
 # Rotas da API (Fases 0-5 do PLAN.md)
+# Import tardio para evitar import circular (api.routes -> core.dependencies -> models)
 from comparador_precos.api.routes import auth, credits  # noqa: E402
 
 app.include_router(auth.router)

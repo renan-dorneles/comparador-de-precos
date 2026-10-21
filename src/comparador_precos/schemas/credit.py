@@ -4,7 +4,6 @@
 """Schemas Pydantic para sistema de créditos."""
 
 from datetime import datetime
-from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
@@ -15,10 +14,8 @@ class CreditTransactionRead(BaseModel):
     amount: int = Field(
         ..., description="Quantidade de créditos (positivo para ganho, negativo para gasto)"
     )
-    transaction_type: str = Field(
-        ..., description="Tipo: ONBOARDING, SCAN_REWARD, SEARCH_COST"
-    )
-    reference_id: Optional[str] = None
+    transaction_type: str = Field(..., description="Tipo: ONBOARDING, SCAN_REWARD, SEARCH_COST")
+    reference_id: str | None = None
     created_at: datetime
 
     class Config:
@@ -27,14 +24,15 @@ class CreditTransactionRead(BaseModel):
 
 class CreditBalanceRead(BaseModel):
     balance: int = Field(..., description="Saldo atual de créditos")
-    recent_transactions: List[CreditTransactionRead] = Field(
+    recent_transactions: list[CreditTransactionRead] = Field(
         default_factory=list, description="Últimas transações"
     )
 
 
 class CreditEntry(BaseModel):
     """Entrada para registrar uma transação de crédito no ledger."""
+
     user_id: int
     amount: int
     transaction_type: str
-    reference_id: Optional[str] = None
+    reference_id: str | None = None

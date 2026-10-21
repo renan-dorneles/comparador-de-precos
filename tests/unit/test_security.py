@@ -3,8 +3,6 @@
 # ============================================================
 """Testes unitários de hash de senha e tokens JWT."""
 
-import pytest
-
 from comparador_precos.core.security import (
     create_access_token,
     decode_access_token,

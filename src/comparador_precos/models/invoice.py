@@ -3,17 +3,10 @@
 # ============================================================
 """Modelos de Nota Fiscal (NFC-e) e itens."""
 
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    DateTime,
-    Float,
-    ForeignKey,
-    Text,
-    func,
-)
-from sqlalchemy.orm import relationship
+from datetime import datetime
+
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from comparador_precos.core.database import Base
 
@@ -23,27 +16,26 @@ class Invoice(Base):
 
     __tablename__ = "invoices"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    access_key = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    access_key: Mapped[str] = mapped_column(
         String(44),
         unique=True,
         index=True,
         nullable=False,
         comment="Chave de acesso SEFAZ (44 dígitos)",
     )
-    issue_date = Column(DateTime(timezone=True), nullable=False)
-    total_value = Column(Float, nullable=False)
-    user_id = Column(
+    issue_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    total_value: Mapped[float] = mapped_column(Float, nullable=False)
+    user_id: Mapped[int | None] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="SET NULL"),
         nullable=True,
         index=True,
     )
-    raw_html = Column(Text, nullable=True)  # HTML bruto da SEFAZ-RS
-    created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False,
+    # HTML bruto da SEFAZ-RS
+    raw_html: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
     # Relacionamentos
@@ -66,18 +58,19 @@ class InvoiceItem(Base):
 
     __tablename__ = "invoice_items"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    invoice_id = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    invoice_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("invoices.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
-    description = Column(String(500), nullable=False)
-    quantity = Column(Integer, nullable=False)
-    unit = Column(String(20), nullable=False)  # UN, KG, etc
-    price = Column(Float, nullable=False)
-    catalog_product_id = Column(
+    description: Mapped[str] = mapped_column(String(500), nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+    # UN, KG, etc
+    unit: Mapped[str] = mapped_column(String(20), nullable=False)
+    price: Mapped[float] = mapped_column(Float, nullable=False)
+    catalog_product_id: Mapped[int | None] = mapped_column(
         Integer,
         ForeignKey("product_catalog.id", ondelete="SET NULL"),
         nullable=True,

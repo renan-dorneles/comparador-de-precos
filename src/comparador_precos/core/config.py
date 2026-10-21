@@ -4,8 +4,9 @@
 """Configurações da aplicação via pydantic-settings."""
 
 from functools import lru_cache
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -53,7 +54,7 @@ class Settings(BaseSettings):
     scan_reward_credits: int = 5
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> Settings:
     """Retorna instância singleton das configurações."""
     return Settings()

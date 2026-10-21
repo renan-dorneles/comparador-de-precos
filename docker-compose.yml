@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db:
-    image: postgis/postgis:16-latest
+    image: postgis/postgis:16-3.5
     container_name: comparador-db
     environment:
       POSTGRES_DB: comparador_precos

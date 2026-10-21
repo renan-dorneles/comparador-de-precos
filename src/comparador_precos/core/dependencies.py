@@ -3,12 +3,10 @@
 # ============================================================
 """Dependências de injeção para rotas FastAPI."""
 
-from typing import Optional
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from comparador_precos.core.database import get_session
 from comparador_precos.core.security import decode_access_token
@@ -19,7 +17,7 @@ security = HTTPBearer(auto_error=False)
 
 
 async def get_current_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    credentials: HTTPAuthorizationCredentials | None = Depends(security),
     db: AsyncSession = Depends(get_session),
 ) -> User:
     """Obtém o usuário autenticado a partir do token JWT."""
@@ -38,7 +36,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user_id: Optional[int] = payload.get("sub")
+    user_id: int | None = payload.get("sub")
     if user_id is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

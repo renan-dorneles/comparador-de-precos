@@ -3,22 +3,17 @@
 # ============================================================
 """Modelo de transações de crédito (ledger)."""
 
-import enum
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    DateTime,
-    ForeignKey,
-    func,
-)
-from sqlalchemy.orm import relationship
+from datetime import datetime
+from enum import StrEnum
+
+from sqlalchemy import DateTime, ForeignKey, Integer, String, func
 from sqlalchemy import Enum as SAEnum
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from comparador_precos.core.database import Base
 
 
-class TransactionType(str, enum.Enum):
+class TransactionType(StrEnum):
     """Tipos de transações de crédito."""
 
     ONBOARDING = "ONBOARDING"
@@ -31,15 +26,16 @@ class CreditTransaction(Base):
 
     __tablename__ = "credit_transactions"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
-    amount = Column(Integer, nullable=False)  # positivo para ganho, negativo para gasto
-    transaction_type = Column(
+    # positivo para ganho, negativo para gasto
+    amount: Mapped[int] = mapped_column(Integer, nullable=False)
+    transaction_type: Mapped[TransactionType] = mapped_column(
         SAEnum(
             TransactionType,
             name="transaction_type",
@@ -47,11 +43,10 @@ class CreditTransaction(Base):
         ),
         nullable=False,
     )
-    reference_id = Column(String(255), nullable=True)  # ID da nota fiscal ou busca
-    created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False,
+    # ID da nota fiscal ou busca
+    reference_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
     # Relacionamentos

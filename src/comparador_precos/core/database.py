@@ -3,13 +3,15 @@
 # ============================================================
 """Configuração de banco de dados SQLAlchemy 2.0 async."""
 
+from collections.abc import AsyncIterator
+
+from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import MetaData
 
 from comparador_precos.core.config import get_settings
 
@@ -52,7 +54,7 @@ async_session_maker = async_sessionmaker(
 )
 
 
-async def get_session() -> AsyncSession:
+async def get_session() -> AsyncIterator[AsyncSession]:
     """Dependency injection para obter sessão DB em rotas FastAPI."""
     async with async_session_maker() as session:
         try:

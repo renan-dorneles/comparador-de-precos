@@ -3,23 +3,22 @@
 # ============================================================
 """Ambiente do Alembic com suporte a SQLAlchemy 2.0 async."""
 
+import asyncio
+import os
+import sys
 from logging.config import fileConfig
+
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
-import asyncio
-import os
-import sys
-
 # Adiciona o diretório src ao path para importar os modelos
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 # Importa os modelos SQLAlchemy
 from comparador_precos.core.database import Base
-from comparador_precos.core.config import get_settings
 
 # Configurações do Alembic
 config = context.config

@@ -9,24 +9,24 @@ Importar eagerly causaria circular import.
 """
 
 from comparador_precos.core.config import Settings, get_settings
-from comparador_precos.core.database import Base, engine, get_session, init_db, close_db
+from comparador_precos.core.database import Base, close_db, engine, get_session, init_db
 from comparador_precos.core.security import (
-    verify_password,
-    get_password_hash,
     create_access_token,
     decode_access_token,
+    get_password_hash,
+    verify_password,
 )
 
 __all__ = [
-    "Settings",
-    "get_settings",
     "Base",
-    "engine",
-    "get_session",
-    "init_db",
+    "Settings",
     "close_db",
-    "verify_password",
-    "get_password_hash",
     "create_access_token",
     "decode_access_token",
+    "engine",
+    "get_password_hash",
+    "get_session",
+    "get_settings",
+    "init_db",
+    "verify_password",
 ]

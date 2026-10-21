@@ -9,8 +9,7 @@ passlib 1.7.4 é incompatível com bcrypt >= 4.1 (o atributo
 a levantar `ValueError`). O bcrypt puro é a API oficial e está mantido.
 """
 
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import UTC, datetime, timedelta
 
 import bcrypt
 from jose import jwt
@@ -52,26 +51,24 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(
     data: dict,
-    expires_delta: Optional[timedelta] = None,
+    expires_delta: timedelta | None = None,
 ) -> str:
     """Cria token JWT de acesso."""
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
+        expire = datetime.now(UTC) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(
-            minutes=settings.access_token_expire_minutes
-        )
+        expire = datetime.now(UTC) + timedelta(minutes=settings.access_token_expire_minutes)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode,
         settings.secret_key,
         algorithm=settings.algorithm,
     )
-    return encoded_jwt
+    return str(encoded_jwt)
 
 
-def decode_access_token(token: str) -> Optional[dict]:
+def decode_access_token(token: str) -> dict | None:
     """Decodifica e valida token JWT."""
     try:
         payload = jwt.decode(
@@ -79,6 +76,6 @@ def decode_access_token(token: str) -> Optional[dict]:
             settings.secret_key,
             algorithms=[settings.algorithm],
         )
-        return payload
+        return dict(payload)
     except (jwt.JWTError, ValidationError):
         return None

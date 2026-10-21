@@ -3,12 +3,14 @@
 # ============================================================
 """Rate limiting com Redis (regra: 3 scans NFC-e por usuário/dia)."""
 
-from datetime import datetime, timezone
-from typing import Optional
+import logging
+from datetime import UTC, datetime
 
 from fastapi import HTTPException, status
 
 from comparador_precos.core.config import get_settings
+
+logger = logging.getLogger(__name__)
 
 settings = get_settings()
 
@@ -32,12 +34,10 @@ class RateLimiter:
     @staticmethod
     def _key(user_id: int, action: str) -> str:
         """Chave Redis: rate_limit:{action}:{user_id}:{YYYY-MM-DD}."""
-        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        today = datetime.now(UTC).strftime("%Y-%m-%d")
         return f"rate_limit:{action}:{user_id}:{today}"
 
-    async def check_and_increment(
-        self, user_id: int, action: str, limit: int
-    ) -> None:
+    async def check_and_increment(self, user_id: int, action: str, limit: int) -> None:
         """Verifica o limite e incrementa o contador. Levanta HTTP 429 se exceder.
 
         Args:
@@ -55,21 +55,21 @@ class RateLimiter:
                 await redis.expireat(
                     key,
                     int(
-                        datetime.now(timezone.utc)
+                        datetime.now(UTC)
                         .replace(hour=23, minute=59, second=59, microsecond=0)
                         .timestamp()
                     ),
                 )
-        except Exception:
+        except Exception as exc:
             # Falha no Redis não deve bloquear o usuário (fail-open)
+            logger.warning("Rate limiter indisponível, liberando requisição: %s", exc)
             return
 
         if current > limit:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 detail=(
-                    f"Limite de {limit} requisições por dia excedido. "
-                    "Tente novamente amanhã."
+                    f"Limite de {limit} requisições por dia excedido. " "Tente novamente amanhã."
                 ),
             )
 
@@ -79,7 +79,8 @@ class RateLimiter:
         try:
             value = await redis.get(self._key(user_id, action))
             return int(value) if value else 0
-        except Exception:
+        except Exception as exc:
+            logger.warning("Falha ao consultar contador de rate limit: %s", exc)
             return 0
 
     async def reset(self, user_id: int, action: str) -> None:
@@ -87,8 +88,8 @@ class RateLimiter:
         redis = await self.get_redis()
         try:
             await redis.delete(self._key(user_id, action))
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning("Falha ao resetar contador de rate limit: %s", exc)
 
     async def close(self) -> None:
         """Fecha a conexão Redis."""

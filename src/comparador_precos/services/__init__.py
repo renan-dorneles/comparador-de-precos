@@ -3,6 +3,6 @@
 # ============================================================
 """Serviços de regra de negócio."""
 
-from comparador_precos.services.ledger import LedgerService, InsufficientCreditsError
+from comparador_precos.services.ledger import InsufficientCreditsError, LedgerService
 
-__all__ = ["LedgerService", "InsufficientCreditsError"]
+__all__ = ["InsufficientCreditsError", "LedgerService"]
