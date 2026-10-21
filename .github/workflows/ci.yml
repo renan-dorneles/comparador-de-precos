@@ -49,6 +49,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[dev]
 
+      - name: Apply migrations (validação real do schema)
+        env:
+          DATABASE_URL: postgresql+asyncpg://test_user:test_pass@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379/0
+          SECRET_KEY: test-secret-key
+          ALGORITHM: HS256
+          ACCESS_TOKEN_EXPIRE_MINUTES: 30
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+
+
       - name: Lint (black)
         run: black --check src/ tests/ alembic/
 

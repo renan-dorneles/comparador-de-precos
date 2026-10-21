@@ -6,16 +6,22 @@ geolocalizada otimizada com PostGIS.
 
 ## 📋 Status atual
 
-Implementado conforme a **Fase 0** e parte da **Fase 1/2** do [`docs/PLAN.md`](docs/PLAN.md):
+Implementado conforme as **Fases 0, 1 e 2** do [`docs/PLAN.md`](docs/PLAN.md), mais a tarefa
+**3.1** (decoder de QR Code NFC-e):
 
 - ✅ Estrutura de pastas: `src/`, `tests/`, `alembic/`
 - ✅ Dependências: FastAPI, SQLAlchemy 2.0 (async), Pydantic v2, Alembic, GeoAlchemy2/PostGIS, Redis, JWT, bcrypt
 - ✅ Modelos SQLAlchemy: `User`, `CreditTransaction`, `Invoice`, `InvoiceItem`, `ProductCatalog`, `Store`, `StorePrice`
-- ✅ Migração inicial `20240115_001_initial_schema.py` (com índice GIST do PostGIS)
+- ✅ Migração inicial `20240115_001_initial_schema.py` (habilita a extensão PostGIS, com índice GIST em `stores.location`)
 - ✅ Serviço de **Ledger** com atomicidade ACID (`credit_balance` + `credit_transactions` na mesma transação, com lock `FOR UPDATE`)
 - ✅ Rotas `/auth/register`, `/auth/login`, `/auth/refresh`, `/auth/me` e `/me/credits`
 - ✅ Rate limiting com Redis (janela diária)
+- ✅ **Decoder de QR Code NFC-e** (extração e validação da chave de acesso de 44 dígitos)
 - ✅ Docker Compose (PostgreSQL + PostGIS, Redis), Dockerfile e CI (GitHub Actions + pre-commit)
+- ✅ 29 testes unitários (segurança e decoder NFC-e) + validação do schema no CI (`alembic upgrade`/`downgrade`)
+
+**Em andamento:** Fase 3 (pipeline de ingestão NFC-e: scraper SEFAZ-RS, mapeamento IA de catálogo e
+`POST /invoices/scan`), Fase 4 (busca geolocalizada PostGIS) e Fase 5 (testes de integração e deploy).
 
 ## 🚀 Começando
 

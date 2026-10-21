@@ -30,7 +30,9 @@ if config.config_file_name is not None:
 # Substitui a URL do banco por variável de ambiente ou config
 db_url = os.getenv("DATABASE_URL", None)
 if db_url:
-    config.set_main_option("sqlalchemy.url", db_url)
+    # O '%' é caractere de interpolação do ConfigParser: escapá-lo evita que
+    # senhas com '%' quebrem a URL.
+    config.set_main_option("sqlalchemy.url", db_url.replace("%", "%%"))
 
 # Metadata dos modelos para migrações
 target_metadata = Base.metadata

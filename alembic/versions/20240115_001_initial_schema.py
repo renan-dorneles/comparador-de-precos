@@ -24,8 +24,36 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+def _ensure_postgis_extension() -> None:
+    """Habilita a extensão PostGIS de forma idempotente.
+
+    A coluna ``stores.location`` usa o tipo ``geometry(POINT, 4326)``, que só
+    existe se a extensão estiver habilitada no banco. Em Postgres gerenciados
+    (Railway/Render) a extensão já vem instalada e o usuário da aplicação
+    pode não ter permissão para criá-la - nesse caso apenas verificamos.
+    """
+    bind = op.get_bind()
+    already_installed = bind.execute(
+        sa.text("SELECT 1 FROM pg_extension WHERE extname = 'postgis'")
+    ).scalar()
+    if already_installed:
+        return
+
+    try:
+        op.execute("CREATE EXTENSION IF NOT EXISTS postgis")
+    except sa.exc.OperationalError as exc:
+        raise RuntimeError(
+            "Não foi possível habilitar a extensão PostGIS. "
+            "Verifique se a imagem do banco é 'postgis/postgis' ou habilite a "
+            "extensão manualmente com superusuário. Detalhe: " + str(exc)
+        ) from exc
+
+
 def upgrade() -> None:
     """Criar todas as tabelas iniciais."""
+    # A extensão precisa existir antes da criação de 'stores' (coluna geometry)
+    _ensure_postgis_extension()
+
     # Tabela de tipos de transação (enum separado para reusabilidade)
     transaction_type_enum = postgresql.ENUM(
         "ONBOARDING",
@@ -147,7 +175,16 @@ def upgrade() -> None:
         sa.Column("amount", sa.Integer, nullable=False),
         sa.Column(
             "transaction_type",
-            sa.Enum("ONBOARDING", "SCAN_REWARD", "SEARCH_COST", name="transaction_type"),
+            # create_type=False: o tipo ja foi criado explicitamente acima.
+            # Sem isso o create_table tentaria cria-lo novamente e falharia
+            # com 'type "transaction_type" already exists'.
+            postgresql.ENUM(
+                "ONBOARDING",
+                "SCAN_REWARD",
+                "SEARCH_COST",
+                name="transaction_type",
+                create_type=False,
+            ),
             nullable=False,
         ),
         sa.Column("reference_id", sa.String(255), nullable=True),

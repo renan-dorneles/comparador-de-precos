@@ -17,8 +17,22 @@ repos:
         args: [--fix]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.14.1
+    rev: v2.4.0
     hooks:
       - id: mypy
         files: ^src/
-        args: [--ignore-missing-imports]
+        # O hook roda num venv isolado: sem as dependencias do projeto o
+        # SQLAlchemy vira "Any" (disparando no-any-return) e o redis fica sem stubs.
+        additional_dependencies:
+          - sqlalchemy[asyncio]>=2.0.0
+          - fastapi>=0.104.0
+          - pydantic>=2.5.0
+          - pydantic-settings>=2.1.0
+          - email-validator>=2.0.0
+          - geoalchemy2>=0.14.0
+          - redis>=5.0.0
+          - types-redis
+          - asyncpg>=0.29.0
+          - httpx>=0.25.0
+          - python-jose[cryptography]>=3.3.0
+          - bcrypt>=4.0.1
