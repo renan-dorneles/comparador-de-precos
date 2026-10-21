@@ -1,0 +1,22 @@
+# Pre-commit hooks configuration
+# See https://github.com/pre-commit/pre-commit-hooks
+# for more information about what this file does.
+# Run "pre-commit install" to set up the hooks in your $GIT_DIR/.pre-commit-config.yaml
+
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+        language_version: python3.13
+
+  - repo: https://github.com/pycqa/ruff
+    rev: v0.1.2
+    hooks:
+      - id: ruff
+        args: [--fix]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
