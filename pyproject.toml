@@ -39,7 +39,7 @@ dependencies = [
     "httpx>=0.25.0",
     "psycopg2-binary>=2.9.0",
     "python-jose[cryptography]>=3.3.0",
-    "passlib[bcrypt]>=1.7.4",
+    "bcrypt>=4.0.1",
     "python-dotenv>=1.0.0",
     "pydantic-settings>=2.1.0",
 ]
@@ -103,7 +103,9 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+asyncio_mode = "auto"
