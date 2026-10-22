@@ -5,7 +5,7 @@
 
 from datetime import datetime
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, Numeric, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from comparador_precos.core.database import Base
@@ -66,7 +66,8 @@ class InvoiceItem(Base):
         index=True,
     )
     description: Mapped[str] = mapped_column(String(500), nullable=False)
-    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+    # Numeric: NFC-e podem ter quantidades fracionadas (ex.: 0,5 KG)
+    quantity: Mapped[float] = mapped_column(Numeric(10, 3), nullable=False)
     # UN, KG, etc
     unit: Mapped[str] = mapped_column(String(20), nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
