@@ -62,7 +62,8 @@ async def root():
 
 # Rotas da API (Fases 0-5 do PLAN.md)
 # Import tardio para evitar import circular (api.routes -> core.dependencies -> models)
-from comparador_precos.api.routes import auth, credits  # noqa: E402
+from comparador_precos.api.routes import auth, credits, invoices  # noqa: E402
 
 app.include_router(auth.router)
 app.include_router(credits.router)
+app.include_router(invoices.router)
