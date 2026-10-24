@@ -40,6 +40,8 @@ dependencies = [
     "geoalchemy2>=0.14.0",
     "redis>=5.0.0",
     "httpx>=0.25.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
     "python-jose[cryptography]>=3.3.0",
     "bcrypt>=4.0.1",
     "python-dotenv>=1.0.0",
@@ -69,6 +71,9 @@ notebook = [
     "ipykernel>=6.26.0",
     "notebook>=7.0.0",
 ]
+# Decodificacao de QR Code a partir de imagem (upload multipart).
+# O fluxo padrao do app mobile envia o conteudo do QR (texto) e nao a imagem.
+vision = ["opencv-python-headless>=4.10.0.84"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
